@@ -1,7 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"blog/cmd"
+)
 
 func main() {
-	fmt.Println("Hello")
+	cmd.Serve()
 }
