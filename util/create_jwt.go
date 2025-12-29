@@ -3,7 +3,6 @@ package util
 import (
 	"crypto/hmac"
 	"crypto/sha256"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 )
@@ -31,14 +30,14 @@ func CreateJWT(secret string, data Payload) (string, error) {
 		fmt.Println(err)
 	}
 
-	base64Header := base64Convert(byteHeaderArr)
+	base64Header := Base64UrlEncoder(byteHeaderArr)
 
 	byteArrData, err := json.Marshal(data)
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	base64Data := base64Convert(byteArrData)
+	base64Data := Base64UrlEncoder(byteArrData)
 
 	message := base64Header + "." + base64Data
 
@@ -50,13 +49,9 @@ func CreateJWT(secret string, data Payload) (string, error) {
 
 	signature := h.Sum(nil)
 
-	base64Signature := base64Convert(signature)
+	base64Signature := Base64UrlEncoder(signature)
 
 	jwt := base64Header + "." + base64Data + "." + base64Signature
 
 	return jwt, nil
-}
-
-func base64Convert(data []byte) string {
-	return base64.URLEncoding.WithPadding(base64.NoPadding).EncodeToString(data)
 }
