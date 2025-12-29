@@ -10,6 +10,7 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux, manager *middleware.Manager
 	mux.Handle("POST /posts",
 		manager.With(
 			http.HandlerFunc(h.Create),
+			h.middlewares.AuthMiddleware,
 		),
 	)
 
@@ -21,18 +22,21 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux, manager *middleware.Manager
 	mux.Handle("GET /posts/{id}",
 		manager.With(
 			http.HandlerFunc(h.Get),
+			h.middlewares.AuthMiddleware,
 		),
 	)
 
 	mux.Handle("DELETE /posts/{id}",
 		manager.With(
 			http.HandlerFunc(h.Delete),
+			h.middlewares.AuthMiddleware,
 		),
 	)
 
 	mux.Handle("PUT /posts/{id}",
 		manager.With(
 			http.HandlerFunc(h.Update),
+			h.middlewares.AuthMiddleware,
 		),
 	)
 }

@@ -11,16 +11,21 @@ import (
 )
 
 type Server struct {
+	cnf         *config.Config
 	postHandler *post.Handler
 }
 
-func NewServer(postHandler *post.Handler) *Server {
+func NewServer(
+	cnf *config.Config,
+	postHandler *post.Handler,
+) *Server {
 	return &Server{
+		cnf:         cnf,
 		postHandler: postHandler,
 	}
 }
 
-func (server *Server) Start(cnf *config.Config) {
+func (server *Server) Start() {
 	manager := middleware.NewManager()
 	manager.Use(
 		middleware.Preflight,
@@ -33,8 +38,9 @@ func (server *Server) Start(cnf *config.Config) {
 
 	wrapedMux := manager.WrapWithMux(mux)
 
-	port := ":" + strconv.Itoa(cnf.HTTPPort)
+	port := ":" + strconv.Itoa(server.cnf.HTTPPort)
 
+	fmt.Println("Server running on port: ", port)
 	err := http.ListenAndServe(port, wrapedMux)
 	if err != nil {
 		fmt.Println("Server connection failed")

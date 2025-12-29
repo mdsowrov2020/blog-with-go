@@ -6,11 +6,10 @@ import (
 	"net/http"
 	"strings"
 
-	"blog/config"
 	"blog/util"
 )
 
-func AuthMiddleware(next http.Handler) http.Handler {
+func (m *Middlewares) AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		header := w.Header().Get("Authorization")
 		if header == "" {
@@ -38,8 +37,8 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		tokenSignature := accessTokenArr[2]
 
 		message := tokenHeader + "." + tokenPayload
-		cnf := config.GetConfig()
-		bytArrSecret := []byte(cnf.JWTSecretKey)
+
+		bytArrSecret := []byte(m.cnf.JWTSecretKey)
 		bytMessage := []byte(message)
 
 		h := hmac.New(sha256.New, bytArrSecret)

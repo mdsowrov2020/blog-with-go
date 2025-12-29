@@ -33,7 +33,7 @@ func loadConfig() {
 		fmt.Println("Service name is required")
 		os.Exit(1)
 	}
-	jwtSecretKey := os.Getenv("JWT_SECRET")
+	jwtSecretKey := os.Getenv("JWT_SECRET_KEY")
 	if jwtSecretKey == "" {
 		fmt.Println("JWT key  is required")
 		os.Exit(1)

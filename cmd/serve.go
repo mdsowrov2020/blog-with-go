@@ -4,13 +4,16 @@ import (
 	"blog/config"
 	"blog/rest"
 	"blog/rest/handler/post"
+	"blog/rest/middleware"
 )
 
 func Serve() {
 	cnf := config.GetConfig()
 
-	postHandler := post.NewHandler()
+	middlewares := middleware.NewMiddlewares(cnf)
 
-	server := rest.NewServer(postHandler)
-	server.Start(cnf)
+	postHandler := post.NewHandler(middlewares)
+
+	server := rest.NewServer(cnf, postHandler)
+	server.Start()
 }
