@@ -1,10 +1,48 @@
 package post
 
 import (
-	"fmt"
+	"encoding/json"
 	"net/http"
+	"strconv"
+
+	"blog/repo"
+	"blog/util"
 )
 
+type UpdatePostReq struct {
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	ImageURL    string `json:"img_url"`
+}
+
 func (h *Handler) Update(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Update post")
+	postID := r.PathValue("id")
+
+	pID, err := strconv.Atoi(postID)
+	if err != nil {
+		util.SendError(w, http.StatusBadRequest, "Please give me valid post id")
+		return
+	}
+
+	var req UpdatePostReq
+
+	decoder := json.NewDecoder(r.Body)
+	err = decoder.Decode(&req)
+	if err != nil {
+		util.SendError(w, http.StatusBadRequest, "Please provide a valid request body")
+		return
+	}
+
+	_, err = h.postRepo.Update(repo.Post{
+		ID:          pID,
+		Title:       req.Title,
+		Description: req.Description,
+		ImageURL:    req.ImageURL,
+	})
+	if err != nil {
+		util.SendError(w, http.StatusInternalServerError, "Internal server error")
+		return
+	}
+
+	util.SendData(w, "Successfully updated post", http.StatusOK)
 }

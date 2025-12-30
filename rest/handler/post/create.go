@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"blog/repo"
 	"blog/util"
 )
 
@@ -25,4 +26,16 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 		util.SendError(w, http.StatusBadRequest, "Please provide a valid request body")
 		return
 	}
+
+	createdPost, err := h.postRepo.Create(repo.Post{
+		Title:       postReq.Title,
+		Description: postReq.Description,
+		ImageURL:    postReq.ImageURL,
+	})
+	if err != nil {
+		util.SendError(w, http.StatusInternalServerError, "Internal server error")
+		return
+	}
+
+	util.SendData(w, createdPost, http.StatusCreated)
 }

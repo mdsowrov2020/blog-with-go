@@ -1,10 +1,17 @@
 package post
 
 import (
-	"fmt"
 	"net/http"
+
+	"blog/util"
 )
 
 func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("List all post")
+	list, err := h.postRepo.List()
+	if err != nil {
+		util.SendError(w, http.StatusBadRequest, "Internal Server Error")
+		return
+	}
+
+	util.SendData(w, list, http.StatusOK)
 }
