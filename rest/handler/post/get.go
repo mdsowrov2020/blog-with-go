@@ -27,5 +27,5 @@ func (h *Handler) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	util.SendData(w, blog, http.StatusOK)
+	util.SendData(w, http.StatusOK, blog)
 }

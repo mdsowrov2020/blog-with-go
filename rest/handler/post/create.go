@@ -37,5 +37,5 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	util.SendData(w, createdPost, http.StatusCreated)
+	util.SendData(w, http.StatusCreated, createdPost)
 }

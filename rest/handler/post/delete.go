@@ -21,5 +21,5 @@ func (h *Handler) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	util.SendData(w, "Successfully deleted product", http.StatusOK)
+	util.SendData(w, http.StatusOK, "Successfully deleted product")
 }

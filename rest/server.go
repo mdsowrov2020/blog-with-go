@@ -7,21 +7,25 @@ import (
 
 	"blog/config"
 	"blog/rest/handler/post"
+	"blog/rest/handler/user"
 	"blog/rest/middleware"
 )
 
 type Server struct {
 	cnf         *config.Config
 	postHandler *post.Handler
+	userHandler *user.Handler
 }
 
 func NewServer(
 	cnf *config.Config,
 	postHandler *post.Handler,
+	userHandler *user.Handler,
 ) *Server {
 	return &Server{
 		cnf:         cnf,
 		postHandler: postHandler,
+		userHandler: userHandler,
 	}
 }
 
@@ -35,6 +39,7 @@ func (server *Server) Start() {
 	mux := http.NewServeMux()
 
 	server.postHandler.RegisterRoutes(mux, manager)
+	server.userHandler.RegisterRoutes(mux, manager)
 
 	wrapedMux := manager.WrapWithMux(mux)
 

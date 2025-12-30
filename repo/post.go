@@ -19,7 +19,7 @@ type postRepo struct {
 	postList []*Post
 }
 
-func NewPost() PostRepo {
+func NewPostRepo() PostRepo {
 	repo := &postRepo{}
 	generateInitialPosts(repo)
 	return repo

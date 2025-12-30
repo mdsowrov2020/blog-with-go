@@ -24,7 +24,7 @@ func NewUserRepo() UserRepo {
 	return &userRepo{}
 }
 
-func (r userRepo) Create(user User) (*User, error) {
+func (r *userRepo) Create(user User) (*User, error) {
 	if user.ID != 0 {
 		return &user, nil
 	}
@@ -34,7 +34,7 @@ func (r userRepo) Create(user User) (*User, error) {
 	return &user, nil
 }
 
-func (r userRepo) Find(email string, password string) (*User, error) {
+func (r *userRepo) Find(email string, password string) (*User, error) {
 	for _, user := range r.userList {
 		if user.Email == email && user.Password == password {
 			return &user, nil

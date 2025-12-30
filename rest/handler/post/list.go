@@ -13,5 +13,5 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	util.SendData(w, list, http.StatusOK)
+	util.SendData(w, http.StatusOK, list)
 }

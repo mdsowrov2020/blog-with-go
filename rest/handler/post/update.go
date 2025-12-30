@@ -44,5 +44,5 @@ func (h *Handler) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	util.SendData(w, "Successfully updated post", http.StatusOK)
+	util.SendData(w, http.StatusOK, "Successfully updated post")
 }
