@@ -1,7 +1,11 @@
 package cmd
 
 import (
+	"fmt"
+	"os"
+
 	"blog/config"
+	"blog/infra/db"
 	"blog/repo"
 	"blog/rest"
 	"blog/rest/handler/post"
@@ -12,10 +16,16 @@ import (
 func Serve() {
 	cnf := config.GetConfig()
 
+	dbCon, err := db.NewConnection()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
 	middlewares := middleware.NewMiddlewares(cnf)
 
 	postRepo := repo.NewPostRepo()
-	userRepo := repo.NewUserRepo()
+	userRepo := repo.NewUserRepo(dbCon)
 
 	postHandler := post.NewHandler(postRepo, middlewares)
 	userHandler := user.NewHandler(userRepo, cnf)
