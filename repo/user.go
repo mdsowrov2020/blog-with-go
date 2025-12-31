@@ -18,9 +18,6 @@ type User struct {
 type UserRepo interface {
 	Create(p User) (*User, error)
 	Find(email, password string) (*User, error)
-	// List() ([]*User, error)
-	// Update(p User) (*User, error)
-	// Delete(id int) error
 }
 
 type userRepo struct {

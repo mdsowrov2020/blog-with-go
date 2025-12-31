@@ -2,7 +2,6 @@ package post
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"blog/repo"
@@ -12,12 +11,10 @@ import (
 type PostReq struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
-	ImageURL    string `json:"img_url"`
+	ImageURL    string `json:"image_url"`
 }
 
 func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Create POST")
-
 	var postReq PostReq
 
 	decode := json.NewDecoder(r.Body)

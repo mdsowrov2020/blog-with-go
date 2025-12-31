@@ -1,10 +1,16 @@
 package repo
 
+import (
+	"database/sql"
+
+	"github.com/jmoiron/sqlx"
+)
+
 type Post struct {
-	ID          int    `json:"id"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	ImageURL    string `json:"image_url"`
+	ID          int    `json:"id" db:"id"`
+	Title       string `json:"title" db:"title"`
+	Description string `json:"description" db:"description"`
+	ImageURL    string `json:"image_url" db:"image_url"`
 }
 
 type PostRepo interface {
@@ -16,73 +22,99 @@ type PostRepo interface {
 }
 
 type postRepo struct {
-	postList []*Post
+	db *sqlx.DB
 }
 
-func NewPostRepo() PostRepo {
-	repo := &postRepo{}
-	generateInitialPosts(repo)
-	return repo
+func NewPostRepo(db *sqlx.DB) PostRepo {
+	return &postRepo{
+		db: db,
+	}
 }
 
 func (r *postRepo) Create(p Post) (*Post, error) {
-	p.ID = len(r.postList) + 1
-	r.postList = append(r.postList, &p)
+	query := `
+	INSERT INTO posts (
+	 title,
+	 description,
+	 image_url
+	) VALUES (
+	 $1,
+	 $2,
+	 $3
+	 ) RETURNING id
+	`
+	row := r.db.QueryRow(query, p.Title, p.Description, p.ImageURL)
+	err := row.Scan(&p.ID)
+	if err != nil {
+		return nil, err
+	}
 	return &p, nil
 }
 
 func (r *postRepo) List() ([]*Post, error) {
-	return r.postList, nil
+	postList := []*Post{}
+
+	query := `
+	SELECT id, title, description, image_url FROM posts
+	`
+
+	err := r.db.Select(&postList, query)
+	if err != nil {
+		return nil, err
+	}
+
+	return postList, nil
 }
 
 func (r *postRepo) Get(id int) (*Post, error) {
-	for _, post := range r.postList {
-		if post.ID == id {
-			return post, nil
+	var post Post
+
+	query := `
+	SELECT 
+	id,
+	title,
+	description,
+	image_url
+	FROM posts
+	WHERE id = $1
+	`
+	err := r.db.Get(&post, query, id)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
 		}
+
+		return nil, err
 	}
 
-	return nil, nil
+	return &post, nil
 }
 
 func (r *postRepo) Update(p Post) (*Post, error) {
-	for idx, product := range r.postList {
-		if product.ID == p.ID {
-			r.postList[idx] = &p
-		}
-	}
+	query := `
+	UPDATE posts
+	SET title = $1, description = $2,image_url = $3
+	WHERE id = $4
 
+	`
+	row := r.db.QueryRow(query, p.Title, p.Description, p.ImageURL, p.ID)
+	err := row.Err()
+	if err != nil {
+		return nil, err
+	}
 	return &p, nil
 }
 
 func (r *postRepo) Delete(id int) error {
-	var tempList []*Post
+	query := `
+	DELETE FROM posts
+	WHERE id = $1
+	`
 
-	for _, post := range r.postList {
-		if post.ID != id {
-			tempList = append(tempList, post)
-		}
+	_, err := r.db.Exec(query, id)
+	if err != nil {
+		return err
 	}
-
-	r.postList = tempList
 
 	return nil
-}
-
-func generateInitialPosts(r *postRepo) {
-	post1 := &Post{
-		ID:          1,
-		Title:       "Mobile-First CSS: Is It Time for a Rethink?",
-		Description: "The mobile-first design methodology is great—it focuses on what really matters to the user, it’s well-practiced, and it’s been a common design pattern for years. So developing your CSS mobile-first should also be great, too…right? ",
-		ImageURL:    "https://lh4.googleusercontent.com/O8lxNeIY3Hb0YDs2EP7QFhGdGsBXOG7mSTCdAJBd5xkm-6RwrpkS1BN63W7RurVCP3nOH9sNpAR9JNGvIGnUTzG0NYm4sUqI5bU2QPhXYEawmKfeUJ_6YwWAIid2ZDHEdRzaQ1LxzUNTGbGk5g",
-	}
-	post2 := &Post{
-		ID:          2,
-		Title:       "I am a creative.",
-		Description: "I am a creative. What I do is alchemy. It is a mystery. I do not so much do it, as let it be done through me. ",
-		ImageURL:    "",
-	}
-
-	r.postList = append(r.postList, post1)
-	r.postList = append(r.postList, post2)
 }

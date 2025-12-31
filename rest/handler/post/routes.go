@@ -22,7 +22,6 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux, manager *middleware.Manager
 	mux.Handle("GET /posts/{id}",
 		manager.With(
 			http.HandlerFunc(h.Get),
-			h.middlewares.AuthMiddleware,
 		),
 	)
 
