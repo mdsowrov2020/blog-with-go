@@ -12,7 +12,7 @@ import (
 type UpdatePostReq struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
-	ImageURL    string `json:"img_url"`
+	ImageURL    string `json:"image_url"`
 }
 
 func (h *Handler) Update(w http.ResponseWriter, r *http.Request) {
