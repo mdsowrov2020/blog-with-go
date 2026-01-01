@@ -4,20 +4,14 @@ import (
 	"database/sql"
 	"fmt"
 
+	"blog/domain"
+	"blog/user"
+
 	"github.com/jmoiron/sqlx"
 )
 
-type User struct {
-	ID       int    `json:"id" db:"id"`
-	FullName string `json:"full_name" db:"full_name"`
-	Email    string `json:"email" db:"email"`
-	Password string `json:"password" db:"password"`
-	IsAuthor bool   `json:"is_author" db:"is_author"`
-}
-
 type UserRepo interface {
-	Create(p User) (*User, error)
-	Find(email, password string) (*User, error)
+	user.UserRepo
 }
 
 type userRepo struct {
@@ -30,7 +24,7 @@ func NewUserRepo(db *sqlx.DB) UserRepo {
 	}
 }
 
-func (r *userRepo) Create(user User) (*User, error) {
+func (r *userRepo) Create(user domain.User) (*domain.User, error) {
 	query := `
 		INSERT INTO users (
 		full_name,
@@ -56,7 +50,6 @@ func (r *userRepo) Create(user User) (*User, error) {
 	}
 	defer rows.Close()
 
-	// 3. Scan the returned ID into the struct
 	if rows.Next() {
 		rows.Scan(&userID)
 	}
@@ -66,16 +59,8 @@ func (r *userRepo) Create(user User) (*User, error) {
 	return &user, nil
 }
 
-func (r *userRepo) Find(email string, password string) (*User, error) {
-	// for _, user := range r.userList {
-	// 	if user.Email == email && user.Password == password {
-	// 		return &user, nil
-	// 	}
-	// }
-
-	// return nil, nil
-
-	var user User
+func (r *userRepo) Find(email string, password string) (*domain.User, error) {
+	var user domain.User
 
 	query := `
 		SELECT id, full_name, email, password, is_author

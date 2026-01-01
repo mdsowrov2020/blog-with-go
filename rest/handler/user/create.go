@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"blog/repo"
+	"blog/domain"
 	"blog/util"
 )
 
@@ -25,7 +25,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := h.userRepo.Create(repo.User{
+	user, err := h.svc.Create(domain.User{
 		FullName: req.FullName,
 		Email:    req.Email,
 		Password: req.Password,

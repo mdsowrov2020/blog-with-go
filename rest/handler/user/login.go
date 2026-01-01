@@ -21,7 +21,7 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid Request Data", http.StatusBadRequest)
 	}
 
-	usr, err := h.userRepo.Find(req.Email, req.Password)
+	usr, err := h.svc.Find(req.Email, req.Password)
 	if err != nil {
 		http.Error(w, "Unauthorized user", http.StatusUnauthorized)
 	}

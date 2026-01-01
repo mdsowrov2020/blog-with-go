@@ -8,9 +8,10 @@ import (
 	"blog/infra/db"
 	"blog/repo"
 	"blog/rest"
-	"blog/rest/handler/post"
-	"blog/rest/handler/user"
+	pstHandler "blog/rest/handler/post"
+	usrHandler "blog/rest/handler/user"
 	"blog/rest/middleware"
+	"blog/user"
 )
 
 func Serve() {
@@ -32,11 +33,16 @@ func Serve() {
 
 	middlewares := middleware.NewMiddlewares(cnf)
 
+	// Repo
 	postRepo := repo.NewPostRepo(dbCon)
 	userRepo := repo.NewUserRepo(dbCon)
 
-	postHandler := post.NewHandler(postRepo, middlewares)
-	userHandler := user.NewHandler(userRepo, cnf)
+	// Domains
+	userService := user.NewService(userRepo)
+
+	// Handler
+	postHandler := pstHandler.NewHandler(postRepo, middlewares)
+	userHandler := usrHandler.NewHandler(userService, cnf)
 
 	server := rest.NewServer(cnf, postHandler, userHandler)
 	server.Start()
