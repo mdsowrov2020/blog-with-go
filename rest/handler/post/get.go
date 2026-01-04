@@ -16,7 +16,7 @@ func (h *Handler) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	blog, err := h.postRepo.Get(pID)
+	blog, err := h.svc.Get(pID)
 	if err != nil {
 		util.SendError(w, http.StatusBadRequest, "Internal Server error")
 		return

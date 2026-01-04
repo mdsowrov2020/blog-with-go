@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"blog/repo"
+	"blog/domain"
 	"blog/util"
 )
 
@@ -24,7 +24,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	createdPost, err := h.postRepo.Create(repo.Post{
+	createdPost, err := h.svc.Create(domain.Post{
 		Title:       postReq.Title,
 		Description: postReq.Description,
 		ImageURL:    postReq.ImageURL,

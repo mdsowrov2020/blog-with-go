@@ -6,6 +6,7 @@ import (
 
 	"blog/config"
 	"blog/infra/db"
+	"blog/post"
 	"blog/repo"
 	"blog/rest"
 	pstHandler "blog/rest/handler/post"
@@ -39,9 +40,10 @@ func Serve() {
 
 	// Domains
 	userService := user.NewService(userRepo)
+	postService := post.NewService(postRepo)
 
 	// Handler
-	postHandler := pstHandler.NewHandler(postRepo, middlewares)
+	postHandler := pstHandler.NewHandler(postService, middlewares)
 	userHandler := usrHandler.NewHandler(userService, cnf)
 
 	server := rest.NewServer(cnf, postHandler, userHandler)

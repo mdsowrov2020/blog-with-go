@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"blog/repo"
+	"blog/domain"
 	"blog/util"
 )
 
@@ -33,7 +33,7 @@ func (h *Handler) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = h.postRepo.Update(repo.Post{
+	_, err = h.svc.Update(domain.Post{
 		ID:          pID,
 		Title:       req.Title,
 		Description: req.Description,

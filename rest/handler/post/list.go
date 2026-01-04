@@ -7,7 +7,7 @@ import (
 )
 
 func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
-	list, err := h.postRepo.List()
+	list, err := h.svc.List()
 	if err != nil {
 		util.SendError(w, http.StatusBadRequest, "Internal Server Error")
 		return

@@ -3,22 +3,14 @@ package repo
 import (
 	"database/sql"
 
+	"blog/domain"
+	"blog/post"
+
 	"github.com/jmoiron/sqlx"
 )
 
-type Post struct {
-	ID          int    `json:"id" db:"id"`
-	Title       string `json:"title" db:"title"`
-	Description string `json:"description" db:"description"`
-	ImageURL    string `json:"image_url" db:"image_url"`
-}
-
 type PostRepo interface {
-	Create(p Post) (*Post, error)
-	List() ([]*Post, error)
-	Get(id int) (*Post, error)
-	Update(p Post) (*Post, error)
-	Delete(id int) error
+	post.PostRepo
 }
 
 type postRepo struct {
@@ -31,7 +23,7 @@ func NewPostRepo(db *sqlx.DB) PostRepo {
 	}
 }
 
-func (r *postRepo) Create(p Post) (*Post, error) {
+func (r *postRepo) Create(p domain.Post) (*domain.Post, error) {
 	query := `
 	INSERT INTO posts (
 	 title,
@@ -51,8 +43,8 @@ func (r *postRepo) Create(p Post) (*Post, error) {
 	return &p, nil
 }
 
-func (r *postRepo) List() ([]*Post, error) {
-	postList := []*Post{}
+func (r *postRepo) List() ([]*domain.Post, error) {
+	postList := []*domain.Post{}
 
 	query := `
 	SELECT id, title, description, image_url FROM posts
@@ -66,8 +58,8 @@ func (r *postRepo) List() ([]*Post, error) {
 	return postList, nil
 }
 
-func (r *postRepo) Get(id int) (*Post, error) {
-	var post Post
+func (r *postRepo) Get(id int) (*domain.Post, error) {
+	var post domain.Post
 
 	query := `
 	SELECT 
@@ -90,7 +82,7 @@ func (r *postRepo) Get(id int) (*Post, error) {
 	return &post, nil
 }
 
-func (r *postRepo) Update(p Post) (*Post, error) {
+func (r *postRepo) Update(p domain.Post) (*domain.Post, error) {
 	query := `
 	UPDATE posts
 	SET title = $1, description = $2,image_url = $3
