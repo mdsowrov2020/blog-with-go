@@ -16,8 +16,12 @@ func (svc service) Create(p domain.Post) (*domain.Post, error) {
 	return svc.postRepo.Create(p)
 }
 
-func (svc service) List() ([]*domain.Post, error) {
-	return svc.postRepo.List()
+func (svc service) List(page, limit int64) ([]*domain.Post, error) {
+	return svc.postRepo.List(page, limit)
+}
+
+func (svc service) Count() (int64, error) {
+	return svc.postRepo.Count()
 }
 
 func (svc service) Get(id int) (*domain.Post, error) {

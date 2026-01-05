@@ -5,4 +5,5 @@ type Post struct {
 	Title       string `json:"title" db:"title"`
 	Description string `json:"description" db:"description"`
 	ImageURL    string `json:"image_url" db:"image_url"`
+	Status      string `json:"status" db:"status"`
 }

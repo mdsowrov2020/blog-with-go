@@ -3,6 +3,7 @@ CREATE TABLE posts(
        title VARCHAR(255) NOT NULL,
        description TEXT,
        image_url TEXT,
+       status VARCHAR(255),
        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 )
